@@ -22,6 +22,9 @@ func main() {
 	idade := 39
 	versao := 1.1
 
+	//Obs. Variáveis declaradas e não usadas geram erro de compilação. A ideia é a linguagem não permitir a declaração de algo que não será utilizado.
+	//telefone := "9282-3109"
+
 	fmt.Println("Olá Sr.", nome, "sua idade é de", idade, "anos.")
 	fmt.Println("Este programa está na versão: ", versao)
 
