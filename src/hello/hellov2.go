@@ -4,6 +4,9 @@ import "fmt"
 import "os"
 import "net/http"
 import "time"
+import "bufio"
+import "strings"
+import "io"
 
 const monitoramento = 5
 const delay = 10
@@ -74,7 +77,10 @@ func leComando() int {
 
 func iniciarMonitoramento() {
 	fmt.Println("Monitorando ...")
-	sites := []string{"https://www.google.com", "https://www.globo.com", "https://www.uol.com.br"}
+
+	//sites := []string{"https://www.google.com", "https://www.globo.com", "https://www.uol.com.br"}
+
+	sites := leSitesDoArquivo()
 
 	fmt.Println(sites)
 
@@ -90,11 +96,42 @@ func iniciarMonitoramento() {
 }
 
 func testaSite(site string) {
-	resp, _ := http.Get(site)
+	resp, err := http.Get(site)
+
+	if err != nil {
+		fmt.Println("Ocorreu um erro:", err)
+	}
 
 	if resp.StatusCode == 200 {
 		fmt.Println("Site:", site, "foi carregado com sucesso!")
 	} else {
 		fmt.Println("Site:", site, "está com problemas. Status code retornado foi:", resp.StatusCode)
 	}
+}
+
+func leSitesDoArquivo() []string {
+	var sites []string
+
+	arquivo, err := os.Open("sites.txt")
+
+	if err != nil {
+		fmt.Println("Ocorreu um erro:", err)
+	}
+
+	leitor := bufio.NewReader(arquivo)
+	for {
+		linha, err := leitor.ReadString('\n')
+
+		linha = strings.TrimSpace(linha)
+
+		sites = append(sites, linha)
+
+		if err == io.EOF {
+			break
+		}
+
+	}
+
+	arquivo.Close()
+	return sites
 }
